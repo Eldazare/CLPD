@@ -1,0 +1,7 @@
+#Data file for player data
+#Contains "body" values and some various stuff
+
+player_health_max=100.0
+
+Player_movespeed_base=10.0
+player_movespeed_reloadMod=0.70
