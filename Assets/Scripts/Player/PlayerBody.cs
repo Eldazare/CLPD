@@ -4,13 +4,24 @@ using UnityEngine;
 
 public class PlayerBody : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+	//--Attributes--
+	public Class playerClass;
+	public _Weapon weapon1;
+	public _Weapon weapon2;
+	//consumable thing
+	//armor
+
+	//pickup
+
+	public void ShootWeapon(){
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+
+	//RuntimeVariables
+	public int currentWeapon;
+	public float healthCurrent;
+	public float movespeedMod; //updated every frame?
+
+	public float money;
 }

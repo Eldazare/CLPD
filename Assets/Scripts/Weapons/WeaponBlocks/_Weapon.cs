@@ -20,6 +20,4 @@ public class _Weapon {
 	public void Shoot(){
 		
 	}
-
-
 }

@@ -8,7 +8,7 @@ public static class DataManager  {
 	//Identifiers: class | drop | enemy | player | weapon
 	static private bool readBool = false;
 
-	static Dictionary<string,string> classData = new Dictionary<string, string>{ };
+	static Dictionary<string, string> classData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> dropData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> enemyData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> playerData = new Dictionary<string, string>{ };
