@@ -2,15 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class _Weapon : MonoBehaviour {
+public class _Weapon {
 
-	// Use this for initialization
-	void Start () {
+	//Stats
+	public GameObject weaponShot;
+	public string type;
+	public float rof;
+	public float damage;
+	public float spread;
+	public float ammo;
+	public float reload;
+	public float swapspeed;
+
+
+	//shot
+	virtual
+	public void Shoot(){
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+
 }

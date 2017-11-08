@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponSniper : MonoBehaviour {
+public class WeaponSniper : _Weapon {
 
-	// Use this for initialization
-	void Start () {
-		
+	public WeaponSniper(){
+		//weapon shot
 	}
+
+	override
+	public void Shoot(){
 	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }

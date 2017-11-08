@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponShotgun : MonoBehaviour {
+public class WeaponShotgun : _Weapon {
 
 	// Use this for initialization
 	void Start () {

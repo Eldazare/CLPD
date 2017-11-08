@@ -1,0 +1,14 @@
+#Weapon data
+#Naming: weapon_name_attribute=value
+#Types: GL Assault SMG Shotgun LMG Sniper Pistol
+#List: test1
+
+
+#test1 - Pistol
+weapon_test1_type=Pistol
+weapon_test1_rof=10
+weapon_test1_damage=1
+weapon_test1_spread=0.5
+weapon_test1_ammo=16
+weapon_test1_reload=2
+weapon_test1_swapspeed=5
