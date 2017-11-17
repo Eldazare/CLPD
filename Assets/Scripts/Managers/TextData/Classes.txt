@@ -1,5 +1,6 @@
-#enum values: spdBase, spdArmor, spdPickup, armor, 
+#values: spdBase, spdArmor, spdPickup, dmgTaken, 
 #rldGl, rldAssault, rldSmg, rldShotgun, rldLmg, rldSniper, rldPistol
 
 
-class_test1_mod=rldPistol,0.8;spdBase, 1.1
+class_test1_mod=rldPistol,0.5;spdBase, 1.1
+

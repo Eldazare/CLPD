@@ -4,13 +4,8 @@ using UnityEngine;
 
 public class WeaponLMG : _Weapon {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	override
+	public float GetWeaponReloadMod (Class playerClass){
+		return playerClass.rldLmg;
 	}
 }

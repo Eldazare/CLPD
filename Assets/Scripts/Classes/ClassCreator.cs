@@ -2,23 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClassCreator : MonoBehaviour {
-	//Modifiers
-	//Movespeed: Base, armor penalty mod, pickup penalty mod
-	//Bonus armor?
-	//Reload speed by type
-
-
-	public Class CreateClass(string name){
+public static class ClassCreator {
+	//TODO: create checks in case of failure (modData not found, mod data false etc.)
+	public static Class CreateClass(string name){
+		Class tempClass = new Class (name);
 		string beginning = "class_" + name + "_";
-		DataManager.ReadDataString (beginning + "mod");
+		string modData = DataManager.ReadDataString (beginning + "mod");
+		string[] parsedModData = modData.Split (";".ToCharArray());
+		foreach (string data in parsedModData) {
+			string[] mod = data.Split (",".ToCharArray ());
+			tempClass.ModifyMod (mod[0],float.Parse(mod[1]));
+		}
+		return tempClass;
 	}
-}
-
-
-public class ClassModifier{
-	public enum modifierType {spdBase, spdArmor, spdPickup, armor, rldGl, rldAssault, rldSmg, rldShotgun, rldLmg, rldSniper, rldPistol};
-	public modifierType mod;
-	public float value;
-
 }

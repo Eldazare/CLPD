@@ -9,7 +9,12 @@ public class WeaponSniper : _Weapon {
 	}
 
 	override
-	public void Shoot(){
-	
+	public IEnumerator Shoot(PlayerBody playerBody){
+		yield return new WaitForSeconds (1.0f);
+	}
+
+	override
+	public float GetWeaponReloadMod (Class playerClass){
+		return playerClass.rldSniper;
 	}
 }

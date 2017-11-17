@@ -2,22 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class _Weapon {
+public abstract class _Weapon {
 
 	//Stats
 	public GameObject weaponShot;
 	public string type;
-	public float rof;
+	public float rof; // in seconds
 	public float damage;
 	public float spread;
 	public float ammo;
-	public float reload;
+	public float reload; // in seconds
 	public float swapspeed;
+
+	protected bool RateOfFireBool = true; // true = shooting allowed
 
 
 	//shot
 	virtual
-	public void Shoot(){
-		
+	public IEnumerator Shoot (PlayerBody playerBody){
+		if (RateOfFireBool) {
+			RateOfFireBool = false;
+			//TODO do stuff here
+			yield return new WaitForSeconds (rof);
+			RateOfFireBool = true;
+		}
+	}
+
+	abstract
+	public float GetWeaponReloadMod (Class playerClass);
+
+	public IEnumerator RofCounter(){ // used for implementation in child class shoot methods
+		RateOfFireBool = false;
+		yield return new WaitForSeconds (rof);
+		RateOfFireBool = true;
 	}
 }

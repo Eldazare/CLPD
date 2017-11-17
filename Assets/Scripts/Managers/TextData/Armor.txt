@@ -1,0 +1,6 @@
+#contains armor data
+
+
+armor_test1_armorHP=20.0
+armor_test1_recoverySpd=1.0
+armor_test1_movespeedMod=0.25

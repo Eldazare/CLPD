@@ -6,7 +6,7 @@ public static class WeaponCreator {
 	// Weapon types: gl assault smg shotgun lmg sniper pistol
 
 
-	static public _Weapon CreateWeapon(string name){
+	public static _Weapon CreateWeapon(string name){
 		string pathBegin = "weapon_" + name + "_";
 		string weaponType = DataManager.ReadDataString (pathBegin + "type");
 		_Weapon wep;
@@ -33,6 +33,7 @@ public static class WeaponCreator {
 			wep = new WeaponPistol ();
 			break;
 		default:
+			Debug.Log ("No weapon name found in switch");
 			return null;
 		}
 		wep.type = weaponType;

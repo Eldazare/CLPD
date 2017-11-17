@@ -8,11 +8,12 @@ public static class DataManager  {
 	//Identifiers: class | drop | enemy | player | weapon
 	static private bool readBool = false;
 
-	static Dictionary<string, string> classData = new Dictionary<string, string>{ };
+	static Dictionary<string,string> classData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> dropData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> enemyData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> playerData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> weaponData = new Dictionary<string, string>{ };
+	static Dictionary<string,string> armorData = new Dictionary<string, string>{ };
 	// could also do <string,weaponStats> dictionary
 
 	static public string ReadDataString(string entryName){
@@ -31,6 +32,8 @@ public static class DataManager  {
 			return playerData [entryName];
 		case "weapon":
 			return weaponData [entryName];
+		case "armor":
+			return armorData [entryName];
 		default:
 			Debug.LogError ("DataManager was given unsuitable identifier in entryName (" + entryName + ").");
 			return null;
@@ -49,6 +52,7 @@ public static class DataManager  {
 		DownloadSingleFile ("Enemies.txt", weaponData);
 		DownloadSingleFile ("Player.txt", weaponData);
 		DownloadSingleFile ("Weapons.txt", weaponData);
+		DownloadSingleFile ("Armor.txt", weaponData);
 
 	}
 
