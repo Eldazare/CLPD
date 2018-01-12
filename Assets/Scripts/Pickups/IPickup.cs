@@ -5,4 +5,6 @@ using UnityEngine;
 public interface IPickup  {
 
 	float GetPickupMovespeedMod ();
+
+	void DropPickup ();
 }

@@ -2,15 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConsumableStims : MonoBehaviour {
+public class ConsumableStims : IConsumable {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	public void ActivateConsumable(Vector2 position){
+
 	}
 }

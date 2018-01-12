@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IBullet : MonoBehaviour {
+public interface IBullet  {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	// Interface for every object that can damage enemies
+	// General tag for objects inheriting this is "Bullet"
+
+	float GetDamage ();
 }

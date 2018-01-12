@@ -8,6 +8,7 @@ public static class ArmorCreator {
 		string pathBegin = "armor_" + name + "_";
 		Armor armor = new Armor (name);
 		armor.armorHP = DataManager.ReadDataFloat (pathBegin + "armorHP");
+		armor.armorHPCurrent = armor.armorHP;
 		armor.movespeedMod = DataManager.ReadDataFloat (pathBegin + "movespeedMod");
 		armor.recoverySpd = DataManager.ReadDataFloat (pathBegin + "recoverySpd");
 		return armor;

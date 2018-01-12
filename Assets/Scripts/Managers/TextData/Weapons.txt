@@ -1,14 +1,17 @@
 #Weapon data
+#ShotTypes: 0=normal | 1=explosion at the end
 #Naming: weapon_name_attribute=value
 #Types: gl assault smg shotgun lmg sniper pistol
-#List: test1
+#Swapspeed not implemented
 
-
-#test1 - Pistol
+%pistol_test1
 weapon_test1_type=pistol
-weapon_test1_rof=10
-weapon_test1_damage=1
-weapon_test1_spread=0.5
+weapon_test1_rof=0.2
+weapon_test1_damage=3
+weapon_test1_spread=4
 weapon_test1_ammo=16
-weapon_test1_reload=2
+weapon_test1_reload=0.8
 weapon_test1_swapspeed=5
+weapon_test1_bulletspeed=10
+weapon_test1_bulletdistance=10
+weapon_test1_shotType=0

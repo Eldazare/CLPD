@@ -5,6 +5,7 @@ using UnityEngine;
 public static class ClassCreator {
 	//TODO: create checks in case of failure (modData not found, mod data false etc.)
 	public static Class CreateClass(string name){
+		Debug.Log ("Creating class named " + name);
 		Class tempClass = new Class (name);
 		string beginning = "class_" + name + "_";
 		string modData = DataManager.ReadDataString (beginning + "mod");

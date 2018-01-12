@@ -1,0 +1,30 @@
+#Data for enemies
+#"Data" for enemy spawning is contained elsewhere, comment the idea behind each enemy
+#If you need more stats, remember to update EnemyStatter and EnemyData to containt those correctly
+#If you need more patterns, update EnemyMovement also
+
+
+enemy_numberOfEnemies=3
+
+#gutterTrash that goes straight in line
+enemy_0_name=mindless
+enemy_0_health=4
+enemy_0_damage=3
+enemy_0_speed=2.5
+enemy_0_pattern=0
+
+
+#basic mook that tries to follow nearest player
+enemy_1_name=mook
+enemy_1_health=9
+enemy_1_damage=10
+enemy_1_speed=1.5
+enemy_1_pattern=1
+
+
+#Uses lunge pattern
+enemy_2_name=teeth
+enemy_2_health=4
+enemy_2_damage=15
+enemy_2_speed=2.3
+enemy_2_pattern=2

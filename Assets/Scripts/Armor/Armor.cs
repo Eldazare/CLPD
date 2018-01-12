@@ -6,7 +6,9 @@ public class Armor {
 
 	public string name;
 	public float armorHP;
+	public float armorHPCurrent;
 	public float recoverySpd; // in milliseconds?
+	public float recoveryCurrent;
 	public float movespeedMod; // from 0 to 1
 
 

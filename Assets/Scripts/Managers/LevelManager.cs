@@ -2,15 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour {
+public class LevelManager {
 
-	// Use this for initialization
-	void Start () {
-		
+	public int finalWave;
+	private float spawnModifier;
+	private float baseSpawnRate;
+	private float clearModifier;
+	public string baseString;
+
+	public int currentWave;
+	public WaveManager currentWaveManager;
+
+
+	public LevelManager(string level){
+		baseString = "level_" + level + "_";
+		string data = DataManager.ReadDataString (baseString + "header");
+		string[] splitData = data.Split (";" [0]);
+		finalWave = int.Parse(splitData [1]);
+		spawnModifier = float.Parse(splitData [0]);
+		clearModifier = DataManager.ReadDataFloat ("level_waveclearmodifier");
+		baseSpawnRate = DataManager.ReadDataFloat ("level_basespawnmod");
+		currentWave = 1;
+		ScoreManager.ReceiveLevel (int.Parse (level));
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	public IEnumerator WaveLoop (){
+		int numberOfEnemyTypes = int.Parse (DataManager.ReadDataString ("enemy_numberOfEnemies"));
+		ScoreManager.Initialize (numberOfEnemyTypes);
+		while (currentWave <= finalWave) {
+			string waveString = baseString + currentWave;
+			currentWaveManager = new WaveManager (waveString, numberOfEnemyTypes, spawnModifier, clearModifier, baseSpawnRate);
+			yield return currentWaveManager.WaveSpawnScript ();
+			yield return currentWaveManager.WaveEndCheck ();
+			currentWave += 1;
+		}
 	}
 }

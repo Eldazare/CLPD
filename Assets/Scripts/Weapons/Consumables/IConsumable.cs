@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IConsumable  {
 
-
+	void ActivateConsumable(Vector2 position);
 }

@@ -2,15 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConsumableAmmo : MonoBehaviour {
+public class ConsumableAmmo : IConsumable {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+	public void ActivateConsumable(Vector2 position){
 	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }

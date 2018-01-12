@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class WeaponCreator {
 	// Weapon types: gl assault smg shotgun lmg sniper pistol
-
+	public static GameObject bulletPrefab;
 
 	public static _Weapon CreateWeapon(string name){
 		string pathBegin = "weapon_" + name + "_";
@@ -37,12 +37,45 @@ public static class WeaponCreator {
 			return null;
 		}
 		wep.type = weaponType;
+		wep.name = name;
 		wep.rof = DataManager.ReadDataFloat (pathBegin + "rof");
 		wep.damage = DataManager.ReadDataFloat (pathBegin + "damage");
 		wep.spread = DataManager.ReadDataFloat (pathBegin + "spread");
-		wep.ammo = DataManager.ReadDataFloat(pathBegin + "ammo");
+		wep.ammoMax = DataManager.ReadDataFloat(pathBegin + "ammo");
+		wep.ReloadWeapon ();	
 		wep.reload = DataManager.ReadDataFloat(pathBegin + "reload");
 		wep.swapspeed = DataManager.ReadDataFloat(pathBegin + "swapspeed");
+		wep.bulletspeed = DataManager.ReadDataFloat (pathBegin + "bulletspeed");
+		wep.bulletdistance = DataManager.ReadDataFloat (pathBegin + "bulletdistance");
+		int shotType = DataManager.ReadDataInt (pathBegin + "shotType");
+		switch (shotType) {
+		case 0:
+			wep.weaponShot = bulletPrefab;
+			break;
+		case 1:
+			wep.weaponShot = Resources.Load ("Assets/Prefabs/Bullets/BulletEx") as GameObject;
+			break;
+		}
 		return wep;
+	}
+
+	public static IConsumable CreateConsumable(string name){
+		switch (name) {
+		case "ammo":
+			return new ConsumableAmmo ();
+		case "flashbang":
+			return new ConsumableFlashbang ();
+		case "javelin":
+			return new ConsumableJavelin ();
+		case "medkit":
+			return new ConsumableMedkit ();
+		case "rocketLauncher":
+			return new ConsumableRocketLauncher ();
+		case "stims":
+			return new ConsumableStims ();
+		default:
+			Debug.LogError ("Unsuitable consumable name found, cross-reference Player.txt or someshit");
+			return null;
+		}
 	}
 }

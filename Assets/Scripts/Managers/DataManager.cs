@@ -14,7 +14,9 @@ public static class DataManager  {
 	static Dictionary<string,string> playerData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> weaponData = new Dictionary<string, string>{ };
 	static Dictionary<string,string> armorData = new Dictionary<string, string>{ };
-	// could also do <string,weaponStats> dictionary
+	static Dictionary<string,string> levelData = new Dictionary<string, string>{ };
+
+	private static List<string> nameList = new List<string>{ };
 
 	static public string ReadDataString(string entryName){
 		if (!readBool) {
@@ -34,10 +36,19 @@ public static class DataManager  {
 			return weaponData [entryName];
 		case "armor":
 			return armorData [entryName];
+		case "level":
+			return levelData [entryName];
 		default:
 			Debug.LogError ("DataManager was given unsuitable identifier in entryName (" + entryName + ").");
 			return null;
 		}
+	}
+
+	static public List<string> GetNameList(){
+		if (!readBool) {
+			DownloadTextData ();
+		}
+		return nameList;
 	}
 
 	static public float ReadDataFloat(string entryName){
@@ -45,26 +56,36 @@ public static class DataManager  {
 		return float.Parse (value);
 	}
 
+	static public int ReadDataInt(string entryName){
+		string value = ReadDataString (entryName);
+		return int.Parse (value);
+	}
+
 
 	static private void DownloadTextData(){
-		DownloadSingleFile ("Classes.txt", weaponData);
-		DownloadSingleFile ("Drops.txt", weaponData);
-		DownloadSingleFile ("Enemies.txt", weaponData);
-		DownloadSingleFile ("Player.txt", weaponData);
+		DownloadSingleFile ("Classes.txt", classData);
+		DownloadSingleFile ("Drops.txt", dropData);
+		DownloadSingleFile ("Enemies.txt", enemyData);
+		DownloadSingleFile ("Player.txt", playerData);
 		DownloadSingleFile ("Weapons.txt", weaponData);
-		DownloadSingleFile ("Armor.txt", weaponData);
-
+		DownloadSingleFile ("Armor.txt", armorData);
+		DownloadSingleFile ("Levels.txt", levelData);
+		readBool = true;
 	}
 
 	static private void DownloadSingleFile(string filename, Dictionary<string,string> dic){
-		string path = "Assets/Managers/TextData/" + filename;
-		StreamReader reader = new StreamReader(path); 
-		string[] data = reader.ReadToEnd ().Split("\n".ToCharArray());
-		Debug.Log (data [0]);
+		string path = "Assets/Scripts/Managers/TextData/" + filename;
+		StreamReader reader = new StreamReader(path);  
+		string[] data = reader.ReadToEnd ().Split("\r\n".ToCharArray());
 		foreach (string line in data) {
-			if (line [0] != ""[0] && line[0] != "#"[0]) {
-				string[] keyValue = line.Split ("=".ToCharArray());
-				dic.Add (keyValue [0], keyValue [1]);
+			if ((line.Length > 0) && (line[0] != "#"[0])) {
+				if (line [0] == "%"[0]) {
+					string lineN = line.Substring (1);
+					nameList.Add (lineN);
+				} else {
+					string[] keyValue = line.Split ("="[0]);
+					dic.Add (keyValue [0], keyValue [1]);
+				}
 			}
 		}
 	}

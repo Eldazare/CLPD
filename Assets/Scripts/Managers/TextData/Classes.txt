@@ -1,6 +1,9 @@
 #values: spdBase, spdArmor, spdPickup, dmgTaken, 
 #rldGl, rldAssault, rldSmg, rldShotgun, rldLmg, rldSniper, rldPistol
 
+class_default_mod=spdBase,1.0
 
-class_test1_mod=rldPistol,0.5;spdBase, 1.1
+
+%class_testClas
+class_testClas_mod=rldPistol,0.5;spdBase, 1.1
 

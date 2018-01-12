@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Spawner
+  - Spawnpoint
+  - OuterWall
+  - Enemy
+  - Bullet
+  - UIManager
+  - InnerWall
+  - MANAGER
+  - EndManager
+  - PauseMenu
   layers:
   - Default
   - TransparentFX

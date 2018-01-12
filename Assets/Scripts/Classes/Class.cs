@@ -74,6 +74,5 @@ public class Class {
 			Debug.Log ("no mod name in switch");
 			break;
 		}
-
 	}
 }

@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour {
+public static class SoundManager {
 
-	// Use this for initialization
-	void Start () {
+
+
+	//private static Dictionary<string, > soundEffects;
+	//private static Dictionary<string, > musics;
+
+	public static void Initialize(){
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+	public static void PlaySoundEffect(string entry){
 		
+	}
+
+	public static void PlayMusic(string entry){
+		if (entry == null) {
+			// Stop music
+		} else{
+			//Get music from dictionary and begin playing it
+		}
 	}
 }
