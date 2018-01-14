@@ -1,6 +1,16 @@
 #contains armor data
 
-%armor_testArm
-armor_testArm_armorHP=20.0
-armor_testArm_recoverySpd=1.0
-armor_testArm_movespeedMod=0.25
+%armor_Light
+armor_Light_armorHP=20.0
+armor_Light_recoverySpd=1.0
+armor_Light_movespeedMod=0.1
+
+%armor_Medium
+armor_Medium_armorHP=50.0
+armor_Medium_recoverySpd=2.0
+armor_Medium_movespeedMod=0.25
+
+%armor_Heavy
+armor_Heavy_armorHP=100.0
+armor_Heavy_recoverySpd=3.0
+armor_Heavy_movespeedMod=0.4

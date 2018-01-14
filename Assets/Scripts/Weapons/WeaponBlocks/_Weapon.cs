@@ -30,7 +30,7 @@ public abstract class _Weapon {
 		if (rateOfFireBool && (this.ammo > 0)) {
 			rateOfFireBool = false;
 			ammo -= 1;
-			owner.Shoot (weaponShot, this);
+			owner.Shoot (weaponShot, this, SoundManager.GetSoundEffect("gunFireDefault"));
 			yield return new WaitForSeconds (rof);
 			rateOfFireBool = true;
 		}

@@ -8,7 +8,6 @@ public class MenuManager : MonoBehaviour {
 
 	public delegate void AddListenerDeleg (string name);
 
-	public GameObject uiManagerPrefab;
 	public GameObject bulletPrefab;
 	public GameObject buttonPrefab;
 	public GameObject playerPrefab;
@@ -40,11 +39,9 @@ public class MenuManager : MonoBehaviour {
 
 	// TODO: Joining game (button etc.) multiplayer
 
-	// TODO: Invunerability
+	// TODO: Invunerability on hit?
 
-	// TODO: Database
-
-	// TODO: MORE ENEMY movement patterns
+	// TODO: MORE ENEMY movement patterns & Levels
 
 	// TODO: UI: Later maybe consumable CD indicator if consumables get implemented.
 
@@ -55,7 +52,11 @@ public class MenuManager : MonoBehaviour {
 			CreateEquipmentButton (s);
 		}
 		WeaponCreator.bulletPrefab = bulletPrefab;
-		DatabaseManager.Test ();
+		SoundManager.Initialize (this.gameObject);
+		SoundManager.PlayMusic ("menuTheme1");
+
+
+		DatabaseManager.Test (); //TODO: TEST locally
 	}
 
 	public void GunChoice(int nr){
@@ -63,6 +64,7 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void ReceivePlayerName(string name){
+		Debug.Log ("Received name " + name);
 		this.playerName = name;
 	}
 
@@ -143,13 +145,18 @@ public class MenuManager : MonoBehaviour {
 		StartCoroutine(GameEnd(true));
 	}
 
-	public IEnumerator GameEnd(bool victory){
+	public void PrematureGameEnd(bool victory){
+		StartCoroutine (GameEnd (victory));
+	}
+
+	private IEnumerator GameEnd(bool victory){
 		AsyncOperation operation = SceneManager.LoadSceneAsync ("EndScene");
 		while (!operation.isDone) {
 			yield return null;
 		}
 		GameObject.FindGameObjectWithTag("EndManager").GetComponent<EndManager>().ReceiveMenuManagerInfo(victory);
 		Destroy (this.gameObject);
+		Debug.Log ("GameEnded");
 	}
 
 	private bool CheckForTakeoff(){

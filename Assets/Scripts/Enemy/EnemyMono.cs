@@ -10,6 +10,8 @@ public class EnemyMono : MonoBehaviour {
 	private WaveManager curWave;
 	private float currentHP;
 	private Rigidbody2D enemyRig;
+	private AudioSource enemyAud;
+	private AudioClip enemyAudClip;
 	private SuperMove pattern;
 
 	void Awake (){
@@ -17,6 +19,9 @@ public class EnemyMono : MonoBehaviour {
 		currentHP = selfData.maxHP;
 		curWave = EnemyStatter.GetCurrentWave ();
 		enemyRig = this.GetComponent<Rigidbody2D> ();
+		enemyAud = this.GetComponent<AudioSource> ();
+		enemyAudClip = SoundManager.GetSoundEffect ("enemyHit");
+		enemyAud.clip = enemyAudClip;
 		pattern = EnemyMovement.GetPattern(selfData.pattern);
 	}
 
@@ -35,6 +40,7 @@ public class EnemyMono : MonoBehaviour {
 	// Enemies doesn't always know who hit them
 	public void TakeDamage(float amount){
 		currentHP -= amount;
+		enemyAud.Stop (); enemyAud.Play ();
 		//Debug.Log ("Took " + amount + " damage, has " + currentHP + " left.");
 		if (currentHP <= 0) {
 			curWave.EnemyDeathReport (enemyType);
@@ -58,9 +64,14 @@ public class EnemyMono : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other){
 		if (other.CompareTag ("Bullet")) {
-			float damage = other.GetComponent<IBullet> ().GetDamage ();
-			this.TakeDamage (damage);
-			Destroy (other.gameObject);
+			if (this.currentHP > 0) {
+				IBullet bull = other.GetComponent<IBullet> ();
+				float damage = bull.GetDamage ();
+				this.TakeDamage (damage);
+				if (bull.DestroyThis()){
+					Destroy (other.gameObject);
+				}
+			}
 		} else if (other.CompareTag ("OuterWall")) {
 			OutOfBounds ();
 		}

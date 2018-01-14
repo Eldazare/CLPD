@@ -53,7 +53,7 @@ public static class WeaponCreator {
 			wep.weaponShot = bulletPrefab;
 			break;
 		case 1:
-			wep.weaponShot = Resources.Load ("Assets/Prefabs/Bullets/BulletEx") as GameObject;
+			wep.weaponShot = Resources.Load ("Bullets/BulletEx") as GameObject;
 			break;
 		}
 		return wep;

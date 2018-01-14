@@ -6,6 +6,8 @@ public class PlayerBody : MonoBehaviour {
 
 	Plane plane = new Plane(new Vector3(0,0,-1),new Vector3(0,0,0)); // plane for raycasting player rotation
 	private Rigidbody2D playerRigidBody;
+	private AudioSource playerAudioSource0; // for gun sounds
+	private AudioSource playerAudioSource1; // for onHitEffects
 	public GameObject emptyChildShoot;
 	private InputManager inputManager;
 
@@ -54,6 +56,9 @@ public class PlayerBody : MonoBehaviour {
 		movespeedReloadBase = DataManager.ReadDataFloat ("player_movespeed_reloadMod");
 		reloadSpeedStandingMod = DataManager.ReadDataFloat ("player_reload_standingMod");
 		this.inputManager = this.GetComponent<InputManager> ();
+		this.playerAudioSource0 = this.GetComponents<AudioSource> () [0];
+		this.playerAudioSource1 = this.GetComponents<AudioSource> () [1];
+		this.playerAudioSource1.clip = SoundManager.GetSoundEffect ("playerOnHit");
 		Debug.Log ("Initialize complete");
 	}
 
@@ -205,6 +210,8 @@ public class PlayerBody : MonoBehaviour {
 	// TODO: Optimize, there is copypaste
 	public void TakeDamage(float amount){
 		Debug.Log ("Took damage");
+		playerAudioSource1.Stop ();
+		playerAudioSource1.Play ();
 		if (armor != null) {
 			if (armor.armorHPCurrent > 0) {
 				armor.armorHPCurrent -= amount;
@@ -212,13 +219,13 @@ public class PlayerBody : MonoBehaviour {
 			} else {
 				this.healthCurrent -= amount;
 				if (this.healthCurrent <= 0) {
-					StartCoroutine(GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().GameEnd (false));
+					GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().PrematureGameEnd (false);
 				}
 			}
 		} else {
 			this.healthCurrent -= amount;
 			if (this.healthCurrent <= 0) {
-				StartCoroutine(GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().GameEnd (false));
+				GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().PrematureGameEnd (false);
 			}
 		}
 	}
@@ -227,9 +234,12 @@ public class PlayerBody : MonoBehaviour {
 		
 	}
 
-	public void Shoot(GameObject bulletPrefab, _Weapon source){
+	public void Shoot(GameObject bulletPrefab, _Weapon source, AudioClip gunClip){
 		GameObject bullet = Instantiate (bulletPrefab, emptyChildShoot.transform.position, Quaternion.identity) as GameObject;
 		bullet.GetComponent<Bullet> ().Initialize (source, this.transform.rotation.eulerAngles.z);
+		playerAudioSource0.Stop ();
+		playerAudioSource0.clip = gunClip;
+		playerAudioSource0.Play ();
 	}
 
 	void OnCollisionEnter2D (Collision2D other){

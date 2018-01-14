@@ -27,6 +27,6 @@ public class Spawner : MonoBehaviour {
 
 	//Move to static class? Used by pauseMenu button.
 	public void EndSceneNow(){
-		StartCoroutine(GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().GameEnd (false));
+		GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().PrematureGameEnd (false);
 	}
 }

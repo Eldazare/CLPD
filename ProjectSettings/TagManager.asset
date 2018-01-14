@@ -14,6 +14,7 @@ TagManager:
   - MANAGER
   - EndManager
   - PauseMenu
+  - Pickup
   layers:
   - Default
   - TransparentFX

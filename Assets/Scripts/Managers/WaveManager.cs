@@ -7,6 +7,7 @@ public class WaveManager {
 
 	private List<int> enemyCounterList = new List<int>{};
 	private int totalEnemyCount;
+	private AudioSource deathSounder;
 
 	Spawner spawner;
 	GameObject[] spawnpointList;
@@ -21,6 +22,8 @@ public class WaveManager {
 		if (nOEnemy != spawner.enemyPrefabList.Length) {
 			Debug.LogError ("prefabList is not as long as it should be");
 		}
+		deathSounder = GameObject.FindGameObjectWithTag ("MANAGER").GetComponents<AudioSource> () [1];
+		deathSounder.clip = SoundManager.GetSoundEffect ("enemyDeath");
 		string value = DataManager.ReadDataString (loadString);
 		string[] valueSplit = value.Split (";" [0]);
 		spawnpointList = GameObject.FindGameObjectsWithTag("Spawnpoint");
@@ -45,6 +48,8 @@ public class WaveManager {
 	public void EnemyDeathReport(int type){
 		enemyCounterList [type] -= 1;
 		ScoreManager.enemyKilled (type);
+		deathSounder.Stop ();
+		deathSounder.Play ();
 		//Debug.Log ("Type " + type + " enemy has died.");
 	}
 

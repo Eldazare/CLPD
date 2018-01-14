@@ -119,7 +119,7 @@ public class MovePattern2 : SuperMove{
 	override
 	public void Movement(Rigidbody2D rig, float speed){
 		if (lungeTimer > 0) {
-			rig.velocity = rig.transform.up * speed * 2;
+			rig.velocity = rig.transform.up * speed * 3;
 			lungeTimer -= Time.fixedDeltaTime;
 		} else {
 			if (DistanceToTarget (target.transform.position, rig) < minDistance && lungeCD < 0) {

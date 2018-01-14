@@ -88,18 +88,19 @@ public class InputManager : MonoBehaviour {
 			return false;
 		}
 	}
-
-	// TODO: Modify music to pause and continue
+		
 	private bool paused = false;
 	private void PauseGame(){
 		if (!paused) {
 			Time.timeScale = 0;
 			paused = true;
 			pauseMenu.SetActive (true);
+			SoundManager.bgmSource.Pause ();
 		} else {
 			Time.timeScale = 1;
 			paused = false;
 			pauseMenu.SetActive (false);
+			SoundManager.bgmSource.UnPause ();
 		}
 	}
 }

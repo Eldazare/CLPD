@@ -45,6 +45,12 @@ public class Bullet : MonoBehaviour, IBullet {
 	}
 
 	public float GetDamage(){
-		return this.damage;
+		float theDamage = this.damage;
+		this.damage = 0;
+		return theDamage;
+	}
+
+	public bool DestroyThis(){
+		return true;
 	}
 }
