@@ -56,7 +56,7 @@ public class MenuManager : MonoBehaviour {
 		SoundManager.PlayMusic ("menuTheme1");
 
 
-		DatabaseManager.Test (); //TODO: TEST locally
+		//StartCoroutine(DatabaseManager.StoreScore("Derp",1,10));
 	}
 
 	public void GunChoice(int nr){

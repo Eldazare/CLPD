@@ -5,9 +5,9 @@ using UnityEngine;
 public static class ScoreManager {
 
 	private static List<int> scores = new List<int>{1, 2, 3};
-	private static int currentScore = 0;
-	private static string playerName;
-	private static int level;
+	public static int currentScore = 0;
+	public static string playerName;
+	public static int level;
 
 	public static void Initialize(int numberOfEnemies){
 		currentScore = 0;
@@ -39,7 +39,6 @@ public static class ScoreManager {
 		} else {
 			end += "\nLEVEL: FAILED";
 		}
-		DatabaseManager.StoreScore (playerName, currentScore, level);
 		return end;
 	}
 }

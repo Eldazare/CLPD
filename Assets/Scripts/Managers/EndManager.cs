@@ -10,6 +10,7 @@ public class EndManager : MonoBehaviour {
 
 	public void ReceiveMenuManagerInfo(bool victory){
 		this.scoreText.text = ScoreManager.GetEndScoreText (victory);
+		StartCoroutine(DatabaseManager.StoreScore(ScoreManager.playerName,ScoreManager.currentScore,ScoreManager.level));
 	}
 
 	public void RestartButton(){
