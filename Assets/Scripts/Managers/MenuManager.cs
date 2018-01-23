@@ -19,44 +19,69 @@ public class MenuManager : MonoBehaviour {
 	private string armorName = null;
 	private string className = null;
 
-	public GameObject LevelCenterPanel;
-	public GameObject EquipmentMenu;
-	public GameObject AssaultMenu;
-	public GameObject GlMenu;
-	public GameObject LMGMenu;
-	public GameObject PistolMenu;
-	public GameObject ShotgunMenu;
-	public GameObject SMGMenu;
-	public GameObject SniperMenu;
-	public GameObject ConsumableMenu;
-	public GameObject ArmorMenu;
-	public GameObject ClassMenu;
+	public GameObject levelCenterPanel;
+	public GameObject equipmentMenu;
+	public GameObject assaultMenu;
+	public GameObject glMenu;
+	public GameObject lmgMenu;
+	public GameObject pistolMenu;
+	public GameObject shotgunMenu;
+	public GameObject smgMenu;
+	public GameObject sniperMenu;
+	public GameObject consumableMenu;
+	public GameObject armorMenu;
+	public GameObject classMenu;
+	public Text scoreText;
 
 
 	private int currentWpnNr;
 	private LevelManager currentLvl;
 
+	private bool battleSceneActive = false;
+	private float battleTimer = 0;
+
 
 	// TODO: Joining game (button etc.) multiplayer
 
+	// TODO: How to play .txt
+
+	// TODO: Feature documentation .txt
+
 	// TODO: Invunerability on hit?
 
-	// TODO: MORE ENEMY movement patterns & Levels
+	// TODO: Play game to generate highscore
+
+	// TODO: Move to text files: Movement class attributes && ScoreManager data && Explosion radius stuff
 
 	// TODO: UI: Later maybe consumable CD indicator if consumables get implemented.
 
 	void Awake(){
 		DontDestroyOnLoad (this.transform.gameObject);
+		SoundManager.Initialize (this.gameObject);
 		List<string> nameData = DataManager.GetNameList ();
 		foreach (string s in nameData) {
 			CreateEquipmentButton (s);
 		}
 		WeaponCreator.bulletPrefab = bulletPrefab;
-		SoundManager.Initialize (this.gameObject);
 		SoundManager.PlayMusic ("menuTheme1");
 
-
+		//DatabaseTest
 		//StartCoroutine(DatabaseManager.StoreScore("Derp",1,10));
+	}
+
+	void Update(){
+		if (battleSceneActive) {
+			battleTimer += Time.deltaTime;
+		}
+	}
+
+	public void GetScoresFrmDTBS(){
+		StartCoroutine (WaitScoresFrmDTBS ());
+	}
+
+	private IEnumerator WaitScoresFrmDTBS(){
+		yield return DatabaseManager.LoadScores ();
+		scoreText.text = DatabaseManager.GetScores ();
 	}
 
 	public void GunChoice(int nr){
@@ -66,6 +91,7 @@ public class MenuManager : MonoBehaviour {
 	public void ReceivePlayerName(string name){
 		Debug.Log ("Received name " + name);
 		this.playerName = name;
+		//ScoreManager.playerName = name;
 	}
 
 	public void ReceiveGun(string name){
@@ -97,6 +123,7 @@ public class MenuManager : MonoBehaviour {
 	//name is doubledigit
 	public void ReceiveLevel(string name){
 		currentLvl = new LevelManager (name);
+		//ScoreManager.level = int.Parse(name);
 	}
 
 	public GameObject SpawnPlayer(){
@@ -140,8 +167,8 @@ public class MenuManager : MonoBehaviour {
 		}
 		GameObject playerGO = SpawnPlayer ();
 		GameObject.FindGameObjectWithTag ("UIManager").GetComponent<PlayerUIManager> ().Initialize (playerGO.GetComponent<PlayerBody> (), currentLvl);
+		battleSceneActive = true;
 		yield return currentLvl.WaveLoop ();
-		//GameEnd
 		StartCoroutine(GameEnd(true));
 	}
 
@@ -150,6 +177,10 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	private IEnumerator GameEnd(bool victory){
+		battleSceneActive = false;
+		if (victory) {
+			ScoreManager.ClearBonus(currentLvl.difficulty, battleTimer);
+		}
 		AsyncOperation operation = SceneManager.LoadSceneAsync ("EndScene");
 		while (!operation.isDone) {
 			yield return null;
@@ -181,50 +212,51 @@ public class MenuManager : MonoBehaviour {
 		#region menuSwitch
 		switch (splitName [0]) {
 		case "gl":
-			currentMenu = GlMenu;
+			currentMenu = glMenu;
 			listenerMethod = this.ReceiveGun;
 			break;
 		case "assault":
-			currentMenu = AssaultMenu;
+			currentMenu = assaultMenu;
 			listenerMethod = this.ReceiveGun;
 			break;
 		case "smg":
-			currentMenu = SMGMenu;
+			currentMenu = smgMenu;
 			listenerMethod = this.ReceiveGun;
 			break;
 		case "shotgun":
-			currentMenu = ShotgunMenu;
+			currentMenu = shotgunMenu;
 			listenerMethod = this.ReceiveGun;
 			break;
 		case "lmg":
-			currentMenu = LMGMenu;
+			currentMenu = lmgMenu;
 			listenerMethod = this.ReceiveGun;
 			break;
 		case "sniper":
-			currentMenu = SniperMenu;
+			currentMenu = sniperMenu;
 			listenerMethod = this.ReceiveGun;
 			break;
 		case "pistol":
-			currentMenu = PistolMenu;
+			currentMenu = pistolMenu;
 			listenerMethod = this.ReceiveGun;
 			break;
 		case "consumable":
-			currentMenu = ConsumableMenu;
+			currentMenu = consumableMenu;
 			listenerMethod = this.ReceiveConsumable;
 			break;
 		case "class":
-			currentMenu = ClassMenu;
+			currentMenu = classMenu;
 			listenerMethod = this.ReceiveClass;
 			break;
 		case "armor":
-			currentMenu = ArmorMenu;
+			currentMenu = armorMenu;
 			listenerMethod = this.ReceiveArmor;
 			break;
 		case "level":
-			currentMenu = LevelCenterPanel;
+			currentMenu = levelCenterPanel;
 			listenerMethod = this.ReceiveLevel;
 			addEquipReturn = false;
 			buttonText = dictionaryName[0]+"-"+dictionaryName[1];
+			SoundManager.AddLevelMusic(dictionaryName);
 			break;
 		default:
 			Debug.Log ("No name found while creating buttons ("+name+")");
@@ -239,7 +271,7 @@ public class MenuManager : MonoBehaviour {
 		btn.onClick.AddListener (delegate{currentMenu.SetActive(false);});
 		btn.onClick.AddListener (delegate{listenerMethod(dictionaryName);});
 		if (addEquipReturn) {
-			btn.onClick.AddListener (delegate{EquipmentMenu.SetActive (true);});
+			btn.onClick.AddListener (delegate{equipmentMenu.SetActive (true);});
 		}
 		Debug.Log ("Created button " + buttonText);
 	}

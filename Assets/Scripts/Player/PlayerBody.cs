@@ -65,9 +65,7 @@ public class PlayerBody : MonoBehaviour {
 	void FixedUpdate(){
 		MovePlayer ();
 		RotatePlayer ();
-		if (armor != null) {
-			armor.recoveryCurrent -= Time.fixedDeltaTime;
-		}
+		ArmorRecoveryInFixedUpdate ();
 	}
 
 	private void MovePlayer(){
@@ -207,31 +205,38 @@ public class PlayerBody : MonoBehaviour {
 		}
 	}
 
+	private void ArmorRecoveryInFixedUpdate(){
+		if (armor != null) {
+			armor.recoveryCurrent -= Time.fixedDeltaTime;
+			if ((armor.recoveryCurrent < 0) && (armor.armorHPCurrent != armor.armorHP)) {
+				Debug.Log ("armor recovered");
+				armor.armorHPCurrent = armor.armorHP;
+			}
+		}
+	}
+
 	// TODO: Optimize, there is copypaste
 	public void TakeDamage(float amount){
 		Debug.Log ("Took damage");
 		playerAudioSource1.Stop ();
 		playerAudioSource1.Play ();
 		if (armor != null) {
+			armor.recoveryCurrent = armor.recoverySpd;
 			if (armor.armorHPCurrent > 0) {
 				armor.armorHPCurrent -= amount;
-				armor.recoveryCurrent = armor.recoverySpd;
 			} else {
-				this.healthCurrent -= amount;
-				if (this.healthCurrent <= 0) {
-					GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().PrematureGameEnd (false);
-				}
+				TakeHPDamage (amount);
 			}
 		} else {
-			this.healthCurrent -= amount;
-			if (this.healthCurrent <= 0) {
-				GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().PrematureGameEnd (false);
-			}
+			TakeHPDamage (amount);
 		}
 	}
 
-	private void DeactivateBody(){
-		
+	private void TakeHPDamage(float amount){
+		this.healthCurrent -= amount;
+		if (this.healthCurrent<= 0){
+			GameObject.FindGameObjectWithTag ("MANAGER").GetComponent<MenuManager> ().PrematureGameEnd (false);
+		}
 	}
 
 	public void Shoot(GameObject bulletPrefab, _Weapon source, AudioClip gunClip){

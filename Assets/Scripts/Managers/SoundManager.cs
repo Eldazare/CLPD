@@ -19,15 +19,18 @@ public static class SoundManager {
 
 		bgmSource = menuManagerObject.GetComponents<AudioSource> ()[0];
 
-		//TODO: add system to read these from level.txt
 		musics.Add("menuTheme1", LoadAudio("BGM/T123-CharSelect"));
-		musics.Add("battleBGM11",LoadAudio("BGM/T10-NativeFaithIntense"));
-		musics.Add("battleBGM12",LoadAudio("BGM/Hanaya-BoL"));
 
 		soundEffects.Add("enemyHit", LoadAudio("HitSounds/ding"));
 		soundEffects.Add("gunFireDefault", LoadAudio("HitSounds/GunShot"));
 		soundEffects.Add ("enemyDeath", LoadAudio ("HitSounds/DeathSnap"));
 		soundEffects.Add ("playerOnHit", LoadAudio ("HitSounds/PlayerPunched"));
+	}
+
+	public static void AddLevelMusic(string lvlID){
+		string musicPath = DataManager.ReadDataString ("level_" + lvlID + "_music");
+		string musicKey = "battleBGM" + lvlID;
+		musics.Add(musicKey,LoadAudio(musicPath));
 	}
 
 	public static AudioClip GetSoundEffect(string entry){

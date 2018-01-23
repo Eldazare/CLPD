@@ -8,8 +8,8 @@ public class Spawner : MonoBehaviour {
 	public GameObject e0pf;
 	public GameObject e1pf;
 	public GameObject e2pf;
-	/*
 	public GameObject e3pf; 
+	/*
 	public GameObject e4pf; 
 	public GameObject e5pf; 
 	*/
@@ -17,7 +17,7 @@ public class Spawner : MonoBehaviour {
 	public GameObject[] enemyPrefabList;
 
 	void Awake(){
-		enemyPrefabList = new GameObject[] { e0pf, e1pf, e2pf /*, e3pf, e4pf, e5pf*/ };
+		enemyPrefabList = new GameObject[] { e0pf, e1pf, e2pf , e3pf/*, e4pf, e5pf*/ };
 	}
 
 	public void Spawn(int enemyIndex, Vector3 spawnPoint){

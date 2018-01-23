@@ -1,6 +1,6 @@
 #Data file for level data
 #Naming: Each wavedata contains amount of each enemy that the wave has.
-#Each Level name MUST contain header row that has N values: spawnRateModifier, numberOfWaves
+#Each Level name MUST contain header row that has N values: spawnRateModifier(float), numberOfWaves(int), arbitaryDifficulty(float)
 
 #margin for clearing the wave
 level_waveclearmodifier=0.1
@@ -9,15 +9,26 @@ level_waveclearmodifier=0.1
 level_basespawnmod=1
 
 %level_11
-level_11_header=1.0;3
+level_11_music=BGM/T10-NativeFaithIntense
+level_11_header=1.0;3;1.0
 level_11_1=10;2
 level_11_2=5;4
 level_11_3=5;6
 
 %level_12
-level_12_header=1.0;5
+level_12_music=BGM/Hanaya-BoL
+level_12_header=1.0;5;2
 level_12_1=20;2;2
-level_12_2=10;5;5
-level_12_3=10;10;5
-level_12_4=10;15;5
-level_12_5=10;20;5
+level_12_2=10;3;4
+level_12_3=10;6;5
+level_12_4=10;9;5
+level_12_5=10;14;8
+
+%level_13
+level_13_music=BGM/SuperCynthBros
+level_13_header=1.0;5;2.5
+level_13_1=25;2;0;2
+level_13_2=10;3;1;5
+level_13_3=10;5;2;3
+level_13_4=10;10;3;2
+level_13_5=10;10;3;5

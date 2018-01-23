@@ -2,9 +2,11 @@
 #"Data" for enemy spawning is contained elsewhere, comment the idea behind each enemy
 #If you need more stats, remember to update EnemyStatter and EnemyData to containt those correctly
 #If you need more patterns, update EnemyMovement also
+#Update prefabs for SPAWNER
 
 
-enemy_numberOfEnemies=3
+
+enemy_numberOfEnemies=4
 
 #gutterTrash that goes straight in line
 enemy_0_name=mindless
@@ -28,3 +30,10 @@ enemy_2_health=4
 enemy_2_damage=15
 enemy_2_speed=2.3
 enemy_2_pattern=2
+
+#Uses rotate pattern
+enemy_3_name=booru
+enemy_3_health=7
+enemy_3_damage=8
+enemy_3_speed=1.5
+enemy_3_pattern=3

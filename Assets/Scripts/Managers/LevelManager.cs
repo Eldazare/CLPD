@@ -5,6 +5,7 @@ using UnityEngine;
 public class LevelManager {
 
 	public int finalWave;
+	public float difficulty;
 	private float spawnModifier;
 	private float baseSpawnRate;
 	private float clearModifier;
@@ -21,6 +22,7 @@ public class LevelManager {
 		string[] splitData = data.Split (";" [0]);
 		finalWave = int.Parse(splitData [1]);
 		spawnModifier = float.Parse(splitData [0]);
+		difficulty = float.Parse (splitData [2]);
 		clearModifier = DataManager.ReadDataFloat ("level_waveclearmodifier");
 		baseSpawnRate = DataManager.ReadDataFloat ("level_basespawnmod");
 		currentWave = 1;

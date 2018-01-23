@@ -798,6 +798,7 @@ MonoBehaviour:
   e0pf: {fileID: 1719266902310672, guid: 623276762a5a7a8409a91d437ef56dca, type: 2}
   e1pf: {fileID: 1668465774709004, guid: 9e3330132688e08478c59cd433ddc288, type: 2}
   e2pf: {fileID: 1247553706164932, guid: e49daa0a769b62f49b72e6a4d3763248, type: 2}
+  e3pf: {fileID: 1610342683227488, guid: 9e6f51bbde0656e478b2123ecd8e139f, type: 2}
   enemyPrefabList: []
 --- !u!1 &485670794
 GameObject:

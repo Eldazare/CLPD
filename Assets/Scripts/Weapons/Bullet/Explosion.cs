@@ -12,7 +12,7 @@ public class Explosion : MonoBehaviour, IBullet {
 
 	public void Initialize(float damage, float travelledDistance){
 		this.damage = damage;
-		this.radius = travelledDistance * 0.35f;
+		this.radius = travelledDistance * 0.25f;
 		this.GetComponent<CircleCollider2D> ().radius = this.radius;
 		StartCoroutine (LateDestroy ());
 	}
