@@ -7,7 +7,7 @@ public abstract class _Weapon {
 
 	//Stats
 	protected PlayerBody owner;
-	public GameObject weaponShot;
+	//public GameObject weaponShot;
 	public string type;
 	public string name;
 	public float rof; // in seconds
@@ -19,6 +19,7 @@ public abstract class _Weapon {
 	public float swapspeed;
 	public float bulletspeed;
 	public float bulletdistance;
+	public int shottype;
 	// Shotspeed?
 
 	protected bool rateOfFireBool = true; // true = shooting allowed
@@ -30,10 +31,14 @@ public abstract class _Weapon {
 		if (rateOfFireBool && (this.ammo > 0)) {
 			rateOfFireBool = false;
 			ammo -= 1;
-			owner.Shoot (weaponShot, this, SoundManager.GetSoundEffect("gunFireDefault"));
+			CallShoot ();
 			yield return new WaitForSeconds (rof);
 			rateOfFireBool = true;
 		}
+	}
+
+	protected void CallShoot(){
+		owner.CallShootRPC(shottype, "gunFireDefault");
 	}
 
 	virtual

@@ -18,7 +18,7 @@ public class WeaponSniper : _Weapon {
 				if (hit) {
 					if (hit.transform.CompareTag ("Enemy")) {
 						EnemyMono hitEnemy = hit.transform.GetComponent<EnemyMono> ();
-						hitEnemy.TakeDamage (this.damage);
+						hitEnemy.TakeDamageExternal (this.damage);
 					}
 				}
 				yield return new WaitForSeconds (rof);

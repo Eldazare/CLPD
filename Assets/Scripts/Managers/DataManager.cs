@@ -63,20 +63,20 @@ public static class DataManager  {
 
 
 	static private void DownloadTextData(){
-		DownloadSingleFile ("Classes.txt", classData);
-		DownloadSingleFile ("Drops.txt", dropData);
-		DownloadSingleFile ("Enemies.txt", enemyData);
-		DownloadSingleFile ("Player.txt", playerData);
-		DownloadSingleFile ("Weapons.txt", weaponData);
-		DownloadSingleFile ("Armor.txt", armorData);
-		DownloadSingleFile ("Levels.txt", levelData);
+		DownloadSingleFile ("Classes", classData);
+		DownloadSingleFile ("Drops", dropData);
+		DownloadSingleFile ("Enemies", enemyData);
+		DownloadSingleFile ("Player", playerData);
+		DownloadSingleFile ("Weapons", weaponData);
+		DownloadSingleFile ("Armor", armorData);
+		DownloadSingleFile ("Levels", levelData);
 		readBool = true;
 	}
 
 	static private void DownloadSingleFile(string filename, Dictionary<string,string> dic){
-		string path = "Assets/Scripts/Managers/TextData/" + filename;
-		StreamReader reader = new StreamReader(path);  
-		string[] data = reader.ReadToEnd ().Split("\r\n".ToCharArray());
+		string path = "TextData/" + filename;
+		TextAsset fullData = Resources.Load (path) as TextAsset; 
+		string[] data = fullData.text.Split("\r\n".ToCharArray());
 		foreach (string line in data) {
 			if ((line.Length > 0) && (line[0] != "#"[0])) {
 				if (line [0] == "%"[0]) {

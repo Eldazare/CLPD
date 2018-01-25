@@ -6,20 +6,25 @@ public class Explosion : MonoBehaviour, IBullet {
 
 	// Should have Trigger Circle Collider
 
+	private PhotonView ownerView;
 	private float damage;
 	private float radius;
-	bool onTriggered = false;
 
-	public void Initialize(float damage, float travelledDistance){
+	public void Initialize(float damage, float bulletSpeed, PhotonView ownerView){
+		this.ownerView = ownerView;
 		this.damage = damage;
-		this.radius = travelledDistance * 0.25f;
-		this.GetComponent<CircleCollider2D> ().radius = this.radius;
+		this.radius = 100.0f / bulletSpeed;
+		this.transform.localScale = new Vector3 (radius, radius, 1);
 		StartCoroutine (LateDestroy ());
 	}
 
 
 	public float GetDamage(){
 		return this.damage;
+	}
+
+	public PhotonView GetOwnerView(){
+		return this.ownerView;
 	}
 
 	public bool DestroyThis(){
@@ -29,17 +34,13 @@ public class Explosion : MonoBehaviour, IBullet {
 	void OnTriggerStay2D(Collider2D other){
 		GameObject otherGO = other.gameObject;
 		if (otherGO.CompareTag ("Enemy")) {
-			otherGO.GetComponent<EnemyMono> ().TakeDamage (this.damage);
+			otherGO.GetComponent<EnemyMono> ().TakeDamageExternal (damage);
 		}
-		onTriggered = true;
+		Destroy (this.gameObject.GetComponent<Collider2D>());
 	}
 
 	private IEnumerator LateDestroy(){
-		while (!onTriggered) {
-			yield return null;
-		}
-		Destroy (this.gameObject.GetComponent<Collider2D>());
-		yield return new WaitForSeconds (0.3f);
+		yield return new WaitForSeconds (0.2f);
 		Destroy (this.gameObject);
 	}
 

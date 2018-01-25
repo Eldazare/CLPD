@@ -10,6 +10,12 @@ public class PlayerBody : MonoBehaviour {
 	private AudioSource playerAudioSource1; // for onHitEffects
 	public GameObject emptyChildShoot;
 	private InputManager inputManager;
+	public PhotonView photonView;
+
+
+	public GameObject bullet0;
+	public GameObject bullet1;
+	public GameObject[] bulletList;
 
 	//--Attributes--
 	private Class playerClass;
@@ -47,6 +53,7 @@ public class PlayerBody : MonoBehaviour {
 	public void Initialize(Class playerClass){
 		this.playerClass = playerClass;
 		this.playerRigidBody = GetComponent<Rigidbody2D> ();
+		this.bulletList = new GameObject[] {bullet0, bullet1};
 		currentWeapon = 1; 
 		reloading = false;
 		healthMax = DataManager.ReadDataFloat ("player_health_max");
@@ -63,9 +70,11 @@ public class PlayerBody : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		MovePlayer ();
-		RotatePlayer ();
-		ArmorRecoveryInFixedUpdate ();
+		if (photonView.isMine) {
+			MovePlayer ();
+			RotatePlayer ();
+			ArmorRecoveryInFixedUpdate ();
+		}
 	}
 
 	private void MovePlayer(){
@@ -114,12 +123,13 @@ public class PlayerBody : MonoBehaviour {
 		_Weapon curWep = GetCurrentWeapon ();
 		if (curWep != null) {
 			reloading = true;
+			float reloadSeconds = GetCurrentWeapon ().reload * GetCurrentWeapon ().GetWeaponReloadMod (this.playerClass);
 			if (this.IsMoving ()) {
 				this.movespeedModReload = movespeedReloadBase;
-				yield return ReloadWait (GetCurrentWeapon ().reload);
+				yield return ReloadWait (reloadSeconds);
 			} else {
 				this.movespeedModReload = 0.0f;
-				yield return ReloadWait (GetCurrentWeapon ().reload * reloadSpeedStandingMod);
+				yield return ReloadWait (reloadSeconds * reloadSpeedStandingMod);
 			}
 			GetCurrentWeapon ().ReloadWeapon ();
 			reloading = false;
@@ -205,6 +215,32 @@ public class PlayerBody : MonoBehaviour {
 		}
 	}
 
+	public void CallDonEverything(string className, string gun1Name, string gun2Name, string armorName, string consumableName){
+		object[] objList = new object[]{ className, gun1Name, gun2Name, armorName, consumableName };
+		photonView.RPC ("DonEverything", PhotonTargets.All, objList);
+	}
+
+	[PunRPC]
+	private void DonEverything(string className, string gun1Name, string gun2Name, string armorName, string consumableName){
+		if (className != null) {
+			Initialize (ClassCreator.CreateClass (className));
+		} else {
+			Initialize (ClassCreator.CreateClass ("default"));
+		}
+		if (gun1Name != null) {
+			DonWeapon (WeaponCreator.CreateWeapon (gun1Name), 1);
+		}
+		if (gun2Name != null) {
+			DonWeapon (WeaponCreator.CreateWeapon (gun2Name), 2);
+		}
+		if (armorName != null) {
+			DonArmor (ArmorCreator.CreateArmor (armorName));
+		}
+		if (consumableName != null) {
+			DonConsumable (WeaponCreator.CreateConsumable (consumableName));
+		}
+	}
+
 	private void ArmorRecoveryInFixedUpdate(){
 		if (armor != null) {
 			armor.recoveryCurrent -= Time.fixedDeltaTime;
@@ -239,11 +275,19 @@ public class PlayerBody : MonoBehaviour {
 		}
 	}
 
-	public void Shoot(GameObject bulletPrefab, _Weapon source, AudioClip gunClip){
+	public void CallShootRPC(int bulletType, string audioKey){
+		object[] objcts = { bulletType, audioKey };
+		photonView.RPC("ShootRPC",PhotonTargets.All, objcts);
+	}
+
+	[PunRPC]
+	public void ShootRPC(int bulletType, string audioKey){
+		GameObject bulletPrefab = bulletList [bulletType];
 		GameObject bullet = Instantiate (bulletPrefab, emptyChildShoot.transform.position, Quaternion.identity) as GameObject;
-		bullet.GetComponent<Bullet> ().Initialize (source, this.transform.rotation.eulerAngles.z);
+		_Weapon source = GetCurrentWeapon ();
+		bullet.GetComponent<Bullet> ().Initialize (source, this.transform.rotation.eulerAngles.z, this.photonView);
 		playerAudioSource0.Stop ();
-		playerAudioSource0.clip = gunClip;
+		playerAudioSource0.clip = SoundManager.GetSoundEffect(audioKey);
 		playerAudioSource0.Play ();
 	}
 

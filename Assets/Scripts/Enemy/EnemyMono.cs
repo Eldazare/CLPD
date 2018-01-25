@@ -13,8 +13,15 @@ public class EnemyMono : MonoBehaviour {
 	private AudioSource enemyAud;
 	private AudioClip enemyAudClip;
 	private SuperMove pattern;
+	private PhotonView photonView;
+
+	private bool IsKillable;
+	private bool BonusAvailable;
 
 	void Awake (){
+		IsKillable = true;
+		BonusAvailable = true;
+		photonView = GetComponent<PhotonView> ();
 		selfData = EnemyStatter.GetEnemyStats (enemyType);
 		currentHP = selfData.maxHP;
 		curWave = EnemyStatter.GetCurrentWave ();
@@ -26,31 +33,55 @@ public class EnemyMono : MonoBehaviour {
 	}
 
 	void Start(){
-		pattern.MovStart (enemyRig);
+		if (photonView.isMine) {
+			pattern.MovStart (enemyRig);
+		}
 	}
 
 	void FixedUpdate(){
-		pattern.Movement (enemyRig, selfData.speed);
+		if (photonView.isMine) {
+			pattern.Movement (enemyRig, selfData.speed);
+		}
 	}
 
 	public EnemyData GetEnemyData(){
 		return selfData;
 	}
 
-	// Enemies doesn't always know who hit them
-	public void TakeDamage(float amount){
-		currentHP -= amount;
-		enemyAud.Stop (); enemyAud.Play ();
-		//Debug.Log ("Took " + amount + " damage, has " + currentHP + " left.");
+	public void TakeDamageExternal(float amount){
+		object[] objList = new object[] { amount };
+		photonView.RPC ("TakeDamage", PhotonTargets.All, objList);
 		if (currentHP <= 0) {
-			curWave.EnemyDeathReport (enemyType);
-			Destroy (this.gameObject);
+			if (BonusAvailable) {
+				BonusAvailable = false;
+				ScoreManager.EnemyKilled (enemyType);
+			}
+		}
+	}
+
+	// Enemies doesn't always know who hit them
+	[PunRPC]
+	private void TakeDamage(float amount){
+		currentHP -= amount;
+		enemyAud.Stop ();
+		enemyAud.Play ();
+		//Debug.Log ("Took " + amount + " damage, has " + currentHP + " left.");
+		if (currentHP <= 0 && IsKillable) {
+			IsKillable = false;
+			if (PhotonNetwork.isMasterClient) {
+				curWave.EnemyDeathReport (enemyType);
+				PhotonNetwork.Destroy (this.gameObject);
+			} else {
+				GameObject.FindGameObjectWithTag ("PunManager").GetComponent<PUNManager> ().UpdateScoresOnly (this.enemyType);
+			}
 		}
 	}
 
 	private void OutOfBounds(){
-		curWave.EnemyDeathReportOutOfBounds (enemyType);
-		Destroy (this.gameObject);
+		if (PhotonNetwork.isMasterClient) {
+			curWave.EnemyDeathReportOutOfBounds (enemyType);
+			PhotonNetwork.Destroy (this.gameObject);
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D other){
@@ -66,9 +97,12 @@ public class EnemyMono : MonoBehaviour {
 		if (other.CompareTag ("Bullet")) {
 			if (this.currentHP > 0) {
 				IBullet bull = other.GetComponent<IBullet> ();
-				float damage = bull.GetDamage ();
-				this.TakeDamage (damage);
-				if (bull.DestroyThis()){
+				if (bull.GetOwnerView().isMine) {
+					//object[] objList = new object[]{ bull.GetDamage() };
+					//photonView.RPC ("TakeDamage", PhotonTargets.All, objList);
+					TakeDamageExternal (bull.GetDamage ());
+				}
+				if (bull.DestroyThis ()) {
 					Destroy (other.gameObject);
 				}
 			}

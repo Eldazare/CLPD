@@ -47,15 +47,7 @@ public static class WeaponCreator {
 		wep.swapspeed = DataManager.ReadDataFloat(pathBegin + "swapspeed");
 		wep.bulletspeed = DataManager.ReadDataFloat (pathBegin + "bulletspeed");
 		wep.bulletdistance = DataManager.ReadDataFloat (pathBegin + "bulletdistance");
-		int shotType = DataManager.ReadDataInt (pathBegin + "shotType");
-		switch (shotType) {
-		case 0:
-			wep.weaponShot = bulletPrefab;
-			break;
-		case 1:
-			wep.weaponShot = Resources.Load ("Bullets/BulletEx") as GameObject;
-			break;
-		}
+		wep.shottype = DataManager.ReadDataInt (pathBegin + "shotType");
 		return wep;
 	}
 

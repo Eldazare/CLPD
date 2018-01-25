@@ -1,0 +1,26 @@
+#values: spdBase, spdArmor, spdPickup, dmgTaken, 
+#rldGl, rldAssault, rldSmg, rldShotgun, rldLmg, rldSniper, rldPistol
+
+class_default_mod=spdBase,1.0
+
+
+%class_pistoler
+class_pistoler_mod=rldPistol,0.5;spdBase, 1.1;spdArmor, 0.7
+
+%class_snibr
+class_snibr_mod=rldSniper,0.2;spdBase, 0.8;dmgTaken, 1.5;spdArmor, 0.7; rldGl, 3.0; rldAssault, 3.0; rldLmg, 3.0; rldPistol, 0.8; rldShotgun, 3.0; rldSmg, 3.0
+
+%class_heavyGuy
+class_heavyGuy_mod=rldLmg,0.65;spdBase, 0.35;dmgTaken, 0.8;spdArmor, 0.0
+
+%class_FAST
+class_FAST_mod=rldShotgun, 0.3;spdBase, 1.4;dmgTaken, 1.2;spdArmor, 1.8
+
+%class_SMGaPist
+class_SMGaPist_mod=rldPistol, 0.7;rldSmg, 0.5; dmgTaken, 1.1
+
+%class_grenadier
+class_grenadier_mod=rldGl, 0.5; spdBase, 0.6; dmgTaken, 1.5; spdArmor, 0.8; rldSniper, 2.0
+
+%class_soldier76
+class_soldier76_mod=rldAssault, 0.7; spdBase, 1.2; spdArmor, 0.5; rldGl, 2.0; rldSniper, 2.0; rldLmg, 2.0

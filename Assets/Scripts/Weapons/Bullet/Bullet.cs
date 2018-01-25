@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour, IBullet {
 	public GameObject explosion;
 	public bool useExplosion = false;
 
-
+	private PhotonView ownerView;
 	private float damage;
 	private float bulletSpeed;
 	private float aliveDistance;
@@ -21,7 +21,8 @@ public class Bullet : MonoBehaviour, IBullet {
 		this.bulletRig = this.GetComponent<Rigidbody2D> ();
 	}
 
-	public void Initialize (_Weapon source, float rotation){
+	public void Initialize (_Weapon source, float rotation, PhotonView ownerView ){
+		this.ownerView = ownerView;
 		this.damage = source.damage;
 		this.bulletSpeed = source.bulletspeed;
 		this.aliveDistance = source.bulletdistance;
@@ -38,7 +39,7 @@ public class Bullet : MonoBehaviour, IBullet {
 		if (movedDis.magnitude > aliveDistance){
 			if (useExplosion) {
 				GameObject explosionGO = Instantiate (explosion, this.transform.position, Quaternion.identity) as GameObject;
-				explosionGO.GetComponent<Explosion> ().Initialize (this.damage, movedDis.magnitude);
+				explosionGO.GetComponent<Explosion> ().Initialize (this.damage, this.bulletSpeed, ownerView);
 			}
 			Destroy (this.gameObject);
 		}
@@ -48,6 +49,10 @@ public class Bullet : MonoBehaviour, IBullet {
 		float theDamage = this.damage;
 		this.damage = 0;
 		return theDamage;
+	}
+
+	public PhotonView GetOwnerView(){
+		return this.ownerView;
 	}
 
 	public bool DestroyThis(){

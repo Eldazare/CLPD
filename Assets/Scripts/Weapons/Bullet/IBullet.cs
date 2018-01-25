@@ -8,5 +8,6 @@ public interface IBullet  {
 	// General tag for objects inheriting this is "Bullet"
 
 	float GetDamage ();
+	PhotonView GetOwnerView();
 	bool DestroyThis();
 }

@@ -47,7 +47,7 @@ public class WaveManager {
 
 	public void EnemyDeathReport(int type){
 		enemyCounterList [type] -= 1;
-		ScoreManager.enemyKilled (type);
+		ScoreManager.EnemyKilled (type);
 		deathSounder.Stop ();
 		deathSounder.Play ();
 		//Debug.Log ("Type " + type + " enemy has died.");

@@ -10,6 +10,14 @@ public class EndManager : MonoBehaviour {
 
 	public void ReceiveMenuManagerInfo(bool victory){
 		this.scoreText.text = ScoreManager.GetEndScoreText (victory);
+		Debug.Log(ScoreManager.GetEndScoreText(victory));
+		AudioSource endSource = GetComponent<AudioSource> ();
+		if (victory) {
+			endSource.clip = (AudioClip)Resources.Load ("Sounds/Ending/Victory");
+		} else {
+			endSource.clip = (AudioClip)Resources.Load ("Sounds/Ending/Defeat");
+		}
+		endSource.Play ();
 		StartCoroutine(DatabaseManager.StoreScore(ScoreManager.playerName,ScoreManager.currentScore,ScoreManager.level));
 	}
 

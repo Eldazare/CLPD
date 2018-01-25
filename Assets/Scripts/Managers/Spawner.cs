@@ -21,7 +21,9 @@ public class Spawner : MonoBehaviour {
 	}
 
 	public void Spawn(int enemyIndex, Vector3 spawnPoint){
-		Instantiate (enemyPrefabList [enemyIndex], spawnPoint, Quaternion.identity);
+		if (PhotonNetwork.isMasterClient) {
+			PhotonNetwork.Instantiate (enemyPrefabList [enemyIndex].name, spawnPoint, Quaternion.identity,0);
+		}
 	}
 
 

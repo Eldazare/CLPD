@@ -13,7 +13,7 @@ public class LevelManager {
 
 	public int currentWave;
 	public WaveManager currentWaveManager;
-	private string level;
+	//private string level;
 
 
 	public LevelManager(string level){
@@ -27,13 +27,10 @@ public class LevelManager {
 		baseSpawnRate = DataManager.ReadDataFloat ("level_basespawnmod");
 		currentWave = 1;
 		ScoreManager.ReceiveLevel (int.Parse (level));
-		this.level = level;
 	}
 
 	public IEnumerator WaveLoop (){
-		SoundManager.PlayMusic ("battleBGM"+level);
 		int numberOfEnemyTypes = int.Parse (DataManager.ReadDataString ("enemy_numberOfEnemies"));
-		ScoreManager.Initialize (numberOfEnemyTypes);
 		while (currentWave <= finalWave) {
 			string waveString = baseString + currentWave;
 			currentWaveManager = new WaveManager (waveString, numberOfEnemyTypes, spawnModifier, clearModifier, baseSpawnRate);

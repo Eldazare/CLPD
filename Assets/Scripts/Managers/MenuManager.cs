@@ -18,6 +18,7 @@ public class MenuManager : MonoBehaviour {
 	private string consumableName = null;
 	private string armorName = null;
 	private string className = null;
+	private string lvlname = null;
 
 	public GameObject levelCenterPanel;
 	public GameObject equipmentMenu;
@@ -33,6 +34,7 @@ public class MenuManager : MonoBehaviour {
 	public GameObject classMenu;
 	public Text scoreText;
 
+	private PhotonView photonView;
 
 	private int currentWpnNr;
 	private LevelManager currentLvl;
@@ -40,18 +42,18 @@ public class MenuManager : MonoBehaviour {
 	private bool battleSceneActive = false;
 	private float battleTimer = 0;
 
-
-	// TODO: Joining game (button etc.) multiplayer
+	//MasterClientData
+	private int levelLoadsReceived = 0;
 
 	// TODO: How to play .txt
 
 	// TODO: Feature documentation .txt
 
+	// TODO: Distinct own and other player bullet colors
+
 	// TODO: Invunerability on hit?
 
-	// TODO: Play game to generate highscore
-
-	// TODO: Move to text files: Movement class attributes && ScoreManager data && Explosion radius stuff
+	// TODO: Move to text files: Movement class attributes && Explosion radius stuff
 
 	// TODO: UI: Later maybe consumable CD indicator if consumables get implemented.
 
@@ -64,6 +66,7 @@ public class MenuManager : MonoBehaviour {
 		}
 		WeaponCreator.bulletPrefab = bulletPrefab;
 		SoundManager.PlayMusic ("menuTheme1");
+		photonView = gameObject.GetComponent<PhotonView> ();
 
 		//DatabaseTest
 		//StartCoroutine(DatabaseManager.StoreScore("Derp",1,10));
@@ -122,70 +125,96 @@ public class MenuManager : MonoBehaviour {
 
 	//name is doubledigit
 	public void ReceiveLevel(string name){
-		currentLvl = new LevelManager (name);
+		lvlname = name;
 		//ScoreManager.level = int.Parse(name);
 	}
 
 	public GameObject SpawnPlayer(){
-		GameObject playerGO = Instantiate (playerPrefab, new Vector3 (0, 0, 0), Quaternion.identity) as GameObject;
-		PlayerBody player = playerGO.GetComponent<PlayerBody> ();
-		if (className != null) {
-			player.Initialize (ClassCreator.CreateClass (className));
-		} else {
-			player.Initialize (ClassCreator.CreateClass ("default"));
-		}
-		if (gun1Name != null) {
-			player.DonWeapon (WeaponCreator.CreateWeapon (gun1Name), 1);
-		}
-		if (gun2Name != null) {
-			player.DonWeapon (WeaponCreator.CreateWeapon (gun2Name), 2);
-		}
-		if (armorName != null) {
-			player.DonArmor (ArmorCreator.CreateArmor (armorName));
-		}
-		if (consumableName != null) {
-			player.DonConsumable (WeaponCreator.CreateConsumable (consumableName));
-		}
+		GameObject playerGO = PhotonNetwork.Instantiate (playerPrefab.name, new Vector3 (0, 0, 0), Quaternion.identity, 0) as GameObject;
+		playerGO.GetComponent<PlayerBody> ().CallDonEverything(className,gun1Name,gun2Name,armorName,consumableName);
 		return playerGO;
 	}
-
-	public void CreateLobby(){
-		// TODO: Multiplayer stuff
-	}
-
+		
 	public void GameStart(){
 		// Called from start button in final menu
-		StartCoroutine(GameWait());
+		if (PhotonNetwork.room != null) {
+			PhotonNetwork.room.IsOpen = false;
+			PhotonNetwork.room.IsVisible = false;
+			photonView.RPC ("GameStartRPC", PhotonTargets.All, lvlname);
+		}
+	}
+
+	[PunRPC]
+	public void GameStartRPC(string lvlName){
+		Debug.Log ("GameStart RPC was called.");
+		if(PhotonNetwork.isMasterClient){
+			Debug.Log ("IS MASTER!");
+		}
+		StartCoroutine(GameWait(lvlName));
 	}
 
 	// IMPORTANT to wait for scene load
-	private IEnumerator GameWait(){
+	private IEnumerator GameWait(string lvlName){
+		this.lvlname = lvlName;
+		Debug.Log ("Gamewait was called");
+		currentLvl = new LevelManager (lvlName);
+		ScoreManager.Initialize ();
 		ScoreManager.ReceivePlayerName (playerName);
 		AsyncOperation operation = SceneManager.LoadSceneAsync ("GameLayout0", LoadSceneMode.Single);
 		while (!operation.isDone) {
 			yield return null;
 		}
+		photonView.RPC ("ReportGameLoad",PhotonTargets.MasterClient, null);
+		if (PhotonNetwork.isMasterClient) {
+			while (levelLoadsReceived < PhotonNetwork.room.PlayerCount) {
+				yield return null;
+			}
+			photonView.RPC ("AfterGameLoad", PhotonTargets.All, null);
+		}
+	}
+
+	[PunRPC]
+	private void AfterGameLoad(){
+		SoundManager.PlayMusic ("battleBGM" + lvlname);
 		GameObject playerGO = SpawnPlayer ();
 		GameObject.FindGameObjectWithTag ("UIManager").GetComponent<PlayerUIManager> ().Initialize (playerGO.GetComponent<PlayerBody> (), currentLvl);
 		battleSceneActive = true;
-		yield return currentLvl.WaveLoop ();
-		StartCoroutine(GameEnd(true));
+		if (PhotonNetwork.isMasterClient) {
+			StartCoroutine (MasterGameWaitEnd ());
+		}
 	}
 
+	private IEnumerator MasterGameWaitEnd(){
+		yield return currentLvl.WaveLoop ();
+		StartCoroutine (GameEnd (true));
+	}
+
+	[PunRPC]
+	private void ReportGameLoad(){
+		levelLoadsReceived += 1;
+	}
+
+
+	[PunRPC]
 	public void PrematureGameEnd(bool victory){
 		StartCoroutine (GameEnd (victory));
 	}
+		
 
 	private IEnumerator GameEnd(bool victory){
 		battleSceneActive = false;
 		if (victory) {
 			ScoreManager.ClearBonus(currentLvl.difficulty, battleTimer);
 		}
+		photonView.RPC ("PrematureGameEnd", PhotonTargets.Others, victory);
+
 		AsyncOperation operation = SceneManager.LoadSceneAsync ("EndScene");
 		while (!operation.isDone) {
 			yield return null;
 		}
 		GameObject.FindGameObjectWithTag("EndManager").GetComponent<EndManager>().ReceiveMenuManagerInfo(victory);
+		GameObject.FindGameObjectWithTag ("PunManager").GetComponent<PUNManager> ().LeaveRoom ();
+		Destroy(GameObject.FindGameObjectWithTag("PunManager"));
 		Destroy (this.gameObject);
 		Debug.Log ("GameEnded");
 	}

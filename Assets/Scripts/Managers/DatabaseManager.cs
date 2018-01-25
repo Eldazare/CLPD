@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MySql.Data.MySqlClient;
 using System;
-using System.Data;
 
 public static class DatabaseManager {
 
@@ -37,7 +35,7 @@ public static class DatabaseManager {
 			if (download.text != "") {
 				rawScores = download.text;
 			} else {
-				rawScores = "No data on database. Why not go into game and change that?";
+				rawScores = "No data on database. Why not go into game and change that? (Empty name doesn't register on game end, so make sure to not leave the name slot empty on first menu)";
 			}
 			Debug.Log (download.text);
 			Debug.Log ("Get scores Success!");

@@ -9,6 +9,7 @@ public class InputManager : MonoBehaviour {
 	GameObject pauseMenu;
 	IPickup potentialPickup = null;
 	GameObject pickupObject = null;
+	PhotonView photonView;
 
 	//Keycodes for shorter code down the line
 	KeyCode Left = KeyCode.A;
@@ -18,8 +19,11 @@ public class InputManager : MonoBehaviour {
 
 	void Start(){
 		playerBody = this.GetComponent<PlayerBody> ();
+		photonView = this.GetComponent<PhotonView> ();
 		pauseMenu = GameObject.FindGameObjectWithTag ("PauseMenu");
-		pauseMenu.SetActive (false);
+		if (pauseMenu != null) {
+			pauseMenu.SetActive (false);
+		}
 	}
 
 	void OnTriggerEnter2D (Collider2D other){
@@ -36,26 +40,28 @@ public class InputManager : MonoBehaviour {
 	}
 
 	void Update(){
-		if (!playerBody.reloading || paused) {
-			if (Input.GetKeyDown (KeyCode.Q)) {
-				playerBody.SwapWeapon ();
-			} else if (Input.GetKeyDown (KeyCode.E)) {
-				if (potentialPickup != null) {
-					playerBody.PickupItem (potentialPickup);
-					Destroy (pickupObject);
+		if (photonView.isMine) {
+			if (!playerBody.reloading || paused) {
+				if (Input.GetKeyDown (KeyCode.Q)) {
+					playerBody.SwapWeapon ();
+				} else if (Input.GetKeyDown (KeyCode.E)) {
+					if (potentialPickup != null) {
+						playerBody.PickupItem (potentialPickup);
+						Destroy (pickupObject);
+					}
+				} else if (Input.GetKeyDown (KeyCode.Space)) {
+					StartCoroutine (playerBody.Reload ());
+				} else if (Input.GetMouseButton (1)) {
+					playerBody.UseConsumable ();
+				} else if (Input.GetMouseButton (0)) {
+					if (!playerBody.ShootWeapon ()) {
+						playerBody.Reload (); // AUTORELOAD
+					}
 				}
-			} else if (Input.GetKeyDown (KeyCode.Space)) {
-				StartCoroutine (playerBody.Reload ());
-			} else if (Input.GetMouseButton (1)) {
-				playerBody.UseConsumable ();
-			} else if (Input.GetMouseButton (0)) {
-				if (!playerBody.ShootWeapon ()) {
-					playerBody.Reload (); // AUTORELOAD
-				}
+			} 
+			if (Input.GetKeyDown (KeyCode.Escape)) {
+				photonView.RPC("PauseGame",PhotonTargets.All, null);
 			}
-		} 
-		if (Input.GetKeyDown (KeyCode.Escape)) {
-			PauseGame ();
 		}
 	}
 
@@ -90,6 +96,8 @@ public class InputManager : MonoBehaviour {
 	}
 		
 	private bool paused = false;
+
+	[PunRPC]
 	private void PauseGame(){
 		if (!paused) {
 			Time.timeScale = 0;
