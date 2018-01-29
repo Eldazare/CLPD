@@ -58,6 +58,7 @@ public class MenuManager : MonoBehaviour {
 	// TODO: UI: Later maybe consumable CD indicator if consumables get implemented.
 
 	void Awake(){
+		Screen.SetResolution (1024, 768, false, 60);
 		DontDestroyOnLoad (this.transform.gameObject);
 		SoundManager.Initialize (this.gameObject);
 		List<string> nameData = DataManager.GetNameList ();
